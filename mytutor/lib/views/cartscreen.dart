@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:mytutor/views/paymentscreen.dart';
 import '../models/user.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -55,7 +56,7 @@ class _CartScreenState extends State<CartScreen> {
             Expanded(
                 child: GridView.count(
                     crossAxisCount: 1,
-                    childAspectRatio: (1 / 0.9),
+                    childAspectRatio: (1 / 0.6),
                     children: List.generate(cartList.length, (index) {
                       return InkWell(
                           child: Card(
@@ -103,40 +104,7 @@ class _CartScreenState extends State<CartScreen> {
                                                             .price
                                                             .toString())
                                                         .toStringAsFixed(2) +
-                                                    "/unit")
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                TextButton(
-                                                    onPressed: () {
-                                                      _updateCart(index, "-");
-                                                    },
-                                                    child: const Text("-")),
-                                                Text(cartList[index]
-                                                    .cartqty
-                                                    .toString()),
-                                                TextButton(
-                                                    onPressed: () {
-                                                      _updateCart(index, "+");
-                                                    },
-                                                    child: const Text("+")),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  "Total: RM " +
-                                                      double.parse(
-                                                              cartList[index]
-                                                                  .pricetotal
-                                                                  .toString())
-                                                          .toStringAsFixed(2),
-                                                  style: const TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
+                                                    "\n"),
                                               ],
                                             ),
                                             Row(
@@ -144,8 +112,8 @@ class _CartScreenState extends State<CartScreen> {
                                                 ElevatedButton(
                                                     onPressed: () =>
                                                         _deleteItem(index),
-                                                    child: const Text(
-                                                        "Delete item"))
+                                                    child: const Icon(
+                                                        Icons.delete))
                                               ],
                                             )
                                           ],
@@ -274,14 +242,13 @@ class _CartScreenState extends State<CartScreen> {
                 style: TextStyle(),
               ),
               onPressed: () async {
-                /*Navigator.of(context).pop();
+                Navigator.of(context).pop();
                 await Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (content) => PaymentScreen(
-                            customer: widget.customer,
-                            totalpayable: totalpayable)));
-                _loadCart();*/
+                            user: widget.user, totalpayable: totalpayable)));
+                _loadCart();
               },
             ),
             TextButton(
@@ -297,40 +264,5 @@ class _CartScreenState extends State<CartScreen> {
         );
       },
     );
-  }
-
-  void _updateCart(int index, String s) {
-    if (s == "-") {
-      if (int.parse(cartList[index].cartqty.toString()) == 1) {
-        _deleteItem(index);
-      }
-    }
-    http.post(
-        Uri.parse(CONSTANTS.server + "/mytutor/mobile/php/update_cart.php"),
-        body: {'cartid': cartList[index].cartid, 'operation': s}).timeout(
-      const Duration(seconds: 5),
-      onTimeout: () {
-        return http.Response(
-            'Error', 408); // Request Timeout response status code
-      },
-    ).then((response) {
-      var jsondata = jsonDecode(response.body);
-      if (response.statusCode == 200 && jsondata['status'] == 'success') {
-        Fluttertoast.showToast(
-            msg: "Success",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 16.0);
-        _loadCart();
-      } else {
-        Fluttertoast.showToast(
-            msg: "Failed",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 16.0);
-      }
-    });
   }
 }

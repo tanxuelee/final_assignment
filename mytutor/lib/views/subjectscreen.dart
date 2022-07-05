@@ -50,7 +50,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          IconButton(
+          TextButton.icon(
             onPressed: () async {
               await Navigator.push(
                   context,
@@ -65,6 +65,8 @@ class _SubjectScreenState extends State<SubjectScreen> {
               Icons.shopping_cart,
               color: Colors.black,
             ),
+            label: Text(widget.user.cart.toString(),
+                style: const TextStyle(color: Colors.black)),
           ),
           IconButton(
             icon: const Icon(Icons.search),
@@ -358,15 +360,13 @@ class _SubjectScreenState extends State<SubjectScreen> {
                       _confirmationAddtoCart(index);
                     },
                     child: const Icon(Icons.shopping_cart)),
-                ElevatedButton(
-                    onPressed: _onFavourite, child: const Icon(Icons.favorite)),
+                const ElevatedButton(
+                    onPressed: null, child: Icon(Icons.favorite)),
               ],
             ),
           );
         });
   }
-
-  void _onFavourite() {}
 
   void _addtoCart(int index) {
     http.post(
