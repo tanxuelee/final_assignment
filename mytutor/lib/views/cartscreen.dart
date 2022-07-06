@@ -111,7 +111,8 @@ class _CartScreenState extends State<CartScreen> {
                                               children: [
                                                 ElevatedButton(
                                                     onPressed: () =>
-                                                        _deleteItem(index),
+                                                        _confirmationDelete(
+                                                            index),
                                                     child: const Icon(
                                                         Icons.delete))
                                               ],
@@ -249,6 +250,42 @@ class _CartScreenState extends State<CartScreen> {
                         builder: (content) => PaymentScreen(
                             user: widget.user, totalpayable: totalpayable)));
                 _loadCart();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _confirmationDelete(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text("Delete subject",
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          content: const Text("Are you sure?"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () async {
+                _deleteItem(index);
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
